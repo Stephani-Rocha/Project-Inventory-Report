@@ -1,19 +1,24 @@
 from inventory_report.reports.simple_report import SimpleReport
 from inventory_report.reports.complete_report import CompleteReport
-from inventory_report.reports.import_data_csv import ImportDataCSV
-from inventory_report.reports.import_data_json import ImportDataJSON
-from inventory_report.reports.import_data_xml import ImportDataXML
+import csv
+import json
+import xmltodict
 
 
 class Inventory:
     @staticmethod
     def import_data(path, type_report):
-        if path.endswith(".csv"):
-            data_list = ImportDataCSV.generate(path)
-        elif path.endswith(".json"):
-            data_list = ImportDataJSON.generate(path)
-        else:
-            data_list = ImportDataXML.generate(path)
+        with open(path, encoding='utf-8') as file:
+
+            if path.endswith(".csv"):
+                data = csv.DictReader(file)
+                data_list = list(data)
+            elif path.endswith(".json"):
+                data_list = json.load(file)
+            else:
+                my_xml = file.read()
+                my_dict = xmltodict.parse(my_xml)
+                data_list = my_dict["dataset"]["record"]
 
         if type_report == "simples":
             simple_report = SimpleReport.generate(data_list)
@@ -21,4 +26,3 @@ class Inventory:
         if type_report == "completo":
             complete_report = CompleteReport.generate(data_list)
             return complete_report
-            # teste: comentei aqui
