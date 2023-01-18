@@ -21,3 +21,4 @@ class Inventory:
         if type_report == "completo":
             complete_report = CompleteReport.generate(data_list)
             return complete_report
+            # teste: comentei aqui
